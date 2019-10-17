@@ -10,7 +10,7 @@ Channel::Channel(EventLoop *loop,int fd):loop_(loop),fd_(fd),events_(0)
 
 Channel::~Channel()
 {
-	//因为用到smart_ptr,<memory>?
+	//脪貌脦陋脫脙碌陆smart_ptr,<memory>?
 	//loop_->poller_->epoll_del(fd.events_);
 	//close(fd_);
 }
