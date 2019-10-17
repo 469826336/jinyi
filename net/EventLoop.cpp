@@ -2,7 +2,7 @@
 
 
 
-//__threadĞŞÊÎ£¬Ã¿¸öÏß³Ì¶¼ÓĞÒ»¸ö¶ÀÁ¢ÊµÌå
+//__threadä¿®é¥°ï¼Œæ¯ä¸ªçº¿ç¨‹éƒ½æœ‰ä¸€ä¸ªç‹¬ç«‹å®ä½“
 __thread EventLoop* t_loopInThisThread = 0;
 
 EventLoop::EventLoop()
@@ -23,7 +23,7 @@ EventLoop::EventLoop()
 
 EventLoop::~EventLoop()
 {
-	//·ÀÖ¹ÔÚloop()ÖĞ
+	//é˜²æ­¢åœ¨loop()ä¸­
 	assert(!looping_);
 	t_loopInThisThread = NULL ;
 }
