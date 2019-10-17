@@ -1,17 +1,17 @@
 #pragma once
 #include "base/CurrentThread.h"
 
-//Ê×ÏÈ¶¨ÒåEventLoop class »ù±¾½Ó¿Ú:¹¹Ôìº¯Êı¡¢Îö¹¹º¯Êı¡¢loop()³ÉÔ±º¯Êı£¬£¨¸Ä½ø£ºclass²»¿É¸´ÖÆ£©
+//é¦–å…ˆå®šä¹‰EventLoop class åŸºæœ¬æ¥å£:æ„é€ å‡½æ•°ã€ææ„å‡½æ•°ã€loop()æˆå‘˜å‡½æ•°ï¼Œï¼ˆæ”¹è¿›ï¼šclassä¸å¯å¤åˆ¶ï¼‰
 class EventLoop
 {
 public:	
 	EventLoop();
 	~EventLoop();
 
-	//Ê±¼äÑ­»·
+	//æ—¶é—´å¾ªç¯
 	void loop();
 
-	//ÅĞ¶ÏÊÇ·ñÔÚloopÏß³ÌÖĞ
+	//åˆ¤æ–­æ˜¯å¦åœ¨loopçº¿ç¨‹ä¸­
 	bool isInLoopThread()const
 	{
 		return threadId_ == CurrentThread::tid();
@@ -19,14 +19,14 @@ public:
 
 	void assertInLoopThread()
 	{
-		//Ã»ÓĞ¼ÓÍ·ÎÄ¼ş<assert.h>
+		//æ²¡æœ‰åŠ å¤´æ–‡ä»¶<assert.h>
 		assert(isInLoopThread());
 	}
 
 
 private:
 	bool looping_;//atomic
-	const pid_t threadId_;//pid_tÕâ¸öÀàĞÍ¶¨ÒåÊµ¼ÊÉÏ¾ÍÊÇintĞÍ
+	const pid_t threadId_;//pid_tè¿™ä¸ªç±»å‹å®šä¹‰å®é™…ä¸Šå°±æ˜¯intå‹
 
 
 
