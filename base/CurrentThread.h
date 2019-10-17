@@ -1,12 +1,12 @@
 #pragma once
-//<stdint.h>¶¨ÒåÁËint16_t,uint32_t,int64_tµÈÀàĞÍ£¬´óÕûÊıÊ¹ÓÃ64Î»ÕûĞÍ
+//<stdint.h>å®šä¹‰äº†int16_t,uint32_t,int64_tç­‰ç±»å‹ï¼Œå¤§æ•´æ•°ä½¿ç”¨64ä½æ•´å‹
 #include <stdint.h>
 
 
 
 namespace CurrentThread
 {
-	//internal,__threadÊÇGCCÄÚÖÃµÄÏß³Ì¾Ö²¿´¢´æÉèÊ©£¬__thread±äÁ¿Ã¿Ò»¸öÏß³ÌÓĞÒ»·İ¶ÀÁ¢ÊµÌå
+	//internal,__threadæ˜¯GCCå†…ç½®çš„çº¿ç¨‹å±€éƒ¨å‚¨å­˜è®¾æ–½ï¼Œ__threadå˜é‡æ¯ä¸€ä¸ªçº¿ç¨‹æœ‰ä¸€ä»½ç‹¬ç«‹å®ä½“
 	extern __thread int t_cacheTid;
 	extern __thread char t_tidString[32];
 	extern __thread int t_tidStringLength;
@@ -14,7 +14,7 @@ namespace CurrentThread
 	void cacheTid();
 	inline int tid()
 	{
-		//__builtin_expectÖ÷Òª×÷ÓÃÊÇÔÚ»ã±à²ãÓÅ»¯ÎÒÃÇµÄ´úÂë£¬¼õÉÙÌø×ªµÄ´ÎÊı
+		//__builtin_expectä¸»è¦ä½œç”¨æ˜¯åœ¨æ±‡ç¼–å±‚ä¼˜åŒ–æˆ‘ä»¬çš„ä»£ç ï¼Œå‡å°‘è·³è½¬çš„æ¬¡æ•°
         //https://blog.csdn.net/huntinux/article/details/51995913
 		if (__builtin_expect(t_cachedTid==0),0)
 		{
