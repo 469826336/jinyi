@@ -1,22 +1,22 @@
 #pragma once
-//handleError()»áÓÃµ½
+//handleError()ä¼šç”¨åˆ°
 #include <string>
 #include <memory>
 #include <functional>
 
 
 
-//Í·ÎÄ¼ş<memory>
+//å¤´æ–‡ä»¶<memory>
 typedef std::shared_ptr<Channel> SP_Channel;
 class EventLoop;
 class Channel
 {
 private:
-	//Í·ÎÄ¼ş<functional>
+	//å¤´æ–‡ä»¶<functional>
 	typedef std::function<void()> EventCallBack;
 	EventLoop *loop_;
 	int fd_;
-	//ÎŞ·ûºÅ32Î»ÕûĞÍ
+	//æ— ç¬¦å·32ä½æ•´å‹
 	__uint32_t events_;
 	__uint32_t revents_;
 	EventCallBack readHandler_;
@@ -45,13 +45,13 @@ public:
 		errorHandler_ = errorHandler ;
 	}
 
-	//¶¨Ê±Æ÷²»ÓÃmuduo·½·¨
+	//å®šæ—¶å™¨ä¸ç”¨muduoæ–¹æ³•
 	//void handleEvent(TimeStamp receiveTime)
 	void handleEvent()
 	{
-		//ÎªÊ²Ã´events_=0 ÒòÎªÒÑ¾­ÓĞÊÂ¼ş±»´¥·¢ÁË ËùÒÔevents_ÒÑ¾­²»ÖØÒªÁËÂğ
+		//ä¸ºä»€ä¹ˆevents_=0 å› ä¸ºå·²ç»æœ‰äº‹ä»¶è¢«è§¦å‘äº† æ‰€ä»¥events_å·²ç»ä¸é‡è¦äº†å—
 		events_ = 0 ;
-		//ÕâÀïÊÇ¹Ò¶Ï²¢ÇÒrevents_ÎŞÊÂ¼ş£¿
+		//è¿™é‡Œæ˜¯æŒ‚æ–­å¹¶ä¸”revents_æ— äº‹ä»¶ï¼Ÿ
 		if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN))
 		{
 			return;
@@ -83,8 +83,8 @@ public:
 
 		//void handleError(int fd,int err_num,std::string short_msg);
 
-		//muduoÓÃenableReading¸üĞÂevents_,²¢ÇÒµ÷ÓÃupdate()
-		//update»áÔÚÄÄ
+		//muduoç”¨enableReadingæ›´æ–°events_,å¹¶ä¸”è°ƒç”¨update()
+		//updateä¼šåœ¨å“ª
 		void setEvents(__uint32_t ev)
 		{
 			events_ = ev ;
