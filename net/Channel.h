@@ -95,7 +95,13 @@ public:
 			revents_ = ev ;
 		}
 
-
+                //在改某个fd在epoll中监听的事件时，如果和上次一模一样，那就不用改了，算是个小优化，去掉也没问题 --linya
+		bool isEqualAndUpdateLastEvents()
+		{
+			bool ret(lastEvents_ == events_);
+			lastEvents_ = events_ ;
+			return ret;
+		}
 
 
 
