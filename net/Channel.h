@@ -83,8 +83,9 @@ public:
 				writeHandler_();
 			}
 		}
-
-		//void handleError(int fd,int err_num,std::string short_msg);
+	}
+	
+                //void handleError(int fd,int err_num,std::string short_msg);
 
 		//muduo用enableReading更新events_,并且调用update()
 		//update会在哪
@@ -97,15 +98,6 @@ public:
 		{
 			revents_ = ev ;
 		}
-
-               
-
-
-
-
-
-
-	}
 
          //在改某个fd在epoll中监听的事件时，如果和上次一模一样，那就不用改了，算是个小优化，去掉也没问题 --linya
 		bool isEqualAndUpdateLastEvents()
