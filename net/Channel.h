@@ -29,7 +29,10 @@ public:
 	~Channel();
 	int getFd();
 	void setFd(int fd);
-
+        void getEvents()
+	{
+		return events_;
+	}
 	void setReadHandle(EventCallBack readHandler)
 	{
 		readHandler_ = readHandler ;
