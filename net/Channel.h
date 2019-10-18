@@ -103,7 +103,10 @@ public:
 			return ret;
 		}
 
-
+                __uint32_t getLastEvents()
+		{
+			return lastEvents_;
+		}
 
 
 
