@@ -49,7 +49,7 @@ public:
 	//void handleEvent(TimeStamp receiveTime)
 	void handleEvent()
 	{
-		//为什么events_=0 因为已经有事件被触发了 所以events_已经不重要了吗
+		//为什么events_=0 因为已经有事件被触发了 所以events_已经不重要了吗 是因为拿到事件了就不期望在这段时间内在监控任何事件
 		events_ = 0 ;
 		//这里是挂断并且revents_无事件？
 		if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN))
