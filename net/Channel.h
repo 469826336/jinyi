@@ -89,6 +89,7 @@ public:
 
 		//muduo用enableReading更新events_,并且调用update()
 		//update会在哪
+	        //在epoll里面通过timerManager更新？
 		void setEvents(__uint32_t ev)
 		{
 			events_ = ev ;
