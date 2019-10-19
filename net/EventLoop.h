@@ -26,8 +26,9 @@ public:
 
 private:
 	bool looping_;//atomic
+	bool quit_;//atomic
 	const pid_t threadId_;//pid_t这个类型定义实际上就是int型
-
+        shared_ptr<Epoll> poller_;//通过shared_ptr间接持有Poller
 
 
 
