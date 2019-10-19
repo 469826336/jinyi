@@ -34,7 +34,22 @@ void EventLoop::loop()
 	assert(!looping_);
 	assert(isInLoopThread());
 	looping_ = true ;
+quit_ = false ;
+	//LOG_TRACE << "EventLoop" << this <<"start looping";
+	std::vector<SP_Channel> activeChannels;
+	while (!quit_)
+	{
+		activeChannels.clear();
+		activeChannels = poller_->poll();
+		for (auto &it : activeChannels)
+		{
+			it->handleEvent();
+		}
 
+
+
+
+	}
 	looping_=false ;
 }
 
