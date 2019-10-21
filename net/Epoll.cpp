@@ -1,13 +1,13 @@
 #include "Epoll.h"
 #include <error.h>
-//socket.hÔÚÄÄÓÃµ½
+//socket.håœ¨å“ªç”¨åˆ°
 //#include <sys/socket.h>
-//Á½¸öÓëtcp/ipÓĞ¹ØµÄÍ·ÎÄ¼ş
+//ä¸¤ä¸ªä¸tcp/ipæœ‰å…³çš„å¤´æ–‡ä»¶
 //#include <netinet/in.h>
 //#include <arpa/inet.h>
-//Ò²Ã»¿´µ½queueºÍdeque
+//ä¹Ÿæ²¡çœ‹åˆ°queueå’Œdeque
 #include<assert.h>
-//Ò²Ã»¿´µ½iostream
+//ä¹Ÿæ²¡çœ‹åˆ°iostream
 
 
 const int EVENTNUM = 4096;
@@ -23,7 +23,7 @@ Epoll::~Epoll()
 
 
 
-//×¢²áĞÂÃèÊö·û
+//æ³¨å†Œæ–°æè¿°ç¬¦
 void Epoll::epoll_add(SP_Channel request,int timeout)
 {
 	int fd = request->getFd() ;
@@ -41,7 +41,7 @@ void Epoll::epoll_add(SP_Channel request,int timeout)
 	}
 }
 
-//ĞŞ¸ÄÃèÊö·û×´Ì¬
+//ä¿®æ”¹æè¿°ç¬¦çŠ¶æ€
 void Epoll::epoll_add(SP_Channel request,int timeout)
 {
 	int fd = request->getFd();
@@ -58,7 +58,7 @@ void Epoll::epoll_add(SP_Channel request,int timeout)
 	}
 }
 
-//´ÓepollÖĞÉ¾³ıÃèÊö·û
+//ä»epollä¸­åˆ é™¤æè¿°ç¬¦
 void Epoll::epoll_del(SP_Channel request)
 {
 	int fd = request->getFd();
@@ -72,7 +72,7 @@ void Epoll::epoll_del(SP_Channel request)
 	fd2chan_[fd].reset();
 }
 
-std::vector<SP_Channel> Epoll::Epoll()
+std::vector<SP_Channel> Epoll::poll()
 {
 	while (true)
 	{
@@ -85,19 +85,19 @@ std::vector<SP_Channel> Epoll::Epoll()
 	}
 }
 
-//·Ö·¢´¦Àíº¯Êı
+//åˆ†å‘å¤„ç†å‡½æ•°
 std::vector<SP_Channel> Epoll::getEventsRequest(int event_count)
 {
 	std::vector<SP_Channel> activeChannels;
 	for (int i = 0;i < event_count;i++)
 	{
-		//»ñÈ¡ÓĞÊÂ¼ş²úÉúµÄÃèÊö·û
+		//è·å–æœ‰äº‹ä»¶äº§ç”Ÿçš„æè¿°ç¬¦
 		int fd = events_[i].data.fd;
 		SP_Channel cur_activeChannel = fd2chan_[fd] ;
 		if (cur_activeChannel)
 		{
 			cur_activeChannel->setRevents(events_[i].events);
-			cur_activeChannel->setEvents(0);//ÊÇÒòÎªÄÃµ½ÊÂ¼şÁË¾Í²»ÆÚÍûÔÚÕâ¶ÎÊ±¼äÄÚÔÚ¼à¿ØÈÎºÎÊÂ¼ş
+			cur_activeChannel->setEvents(0);//æ˜¯å› ä¸ºæ‹¿åˆ°äº‹ä»¶äº†å°±ä¸æœŸæœ›åœ¨è¿™æ®µæ—¶é—´å†…åœ¨ç›‘æ§ä»»ä½•äº‹ä»¶
 			activeChannels.push_back(cur_activeChannel);
 		}
 		else
