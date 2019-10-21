@@ -27,6 +27,11 @@ Epoll::~Epoll()
 void Epoll::epoll_add(SP_Channel request,int timeout)
 {
 	int fd = request->getFd() ;
+	if (timeout > 0)
+	{
+		add_timer(request,timeout);
+		
+	}
 	struct epoll_event event;
 	event.data.fd = fd ;
 	event.events = request->getEvents();
@@ -44,6 +49,10 @@ void Epoll::epoll_add(SP_Channel request,int timeout)
 //修改描述符状态
 void Epoll::epoll_add(SP_Channel request,int timeout)
 {
+	if (timeout > 0)
+	{
+		add_timer(request,timeout);
+	}
 	int fd = request->getFd();
 	if (!request->isEqualAndUpdateLastEvents())
 	{
@@ -108,4 +117,9 @@ std::vector<SP_Channel> Epoll::getEventsRequest(int event_count)
 	return activeChannels;
 }
 
+
+void Epoll::handleExpired()
+{
+	timerQueue_.handleExpiredTimer();
+}
 
