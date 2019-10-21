@@ -3,7 +3,7 @@
 #include <vector>
 #include<sys/epoll.h>
 #include <memory>
-
+#include "Timer.h"
 
 
 class Epoll
@@ -20,13 +20,16 @@ public:
 	{
 		return epollFd_;
 	}
+	void add_timer(std::shared_ptr<Channel> request_data,int timeout);
+	void handleExpired();
 
 
 private:
 	static const int MAXFDS = 100000;
 	int epollFd_;
 	std::vector<epoll_event> events_;
-	std::shared_ptr<Channel> fd2chan_[MAXFDS];//ӳ��
-
+	//没有在EventLoop中用activeChannel存放？在poll返回了std::vector<SP_Channel>
+	std::shared_ptr<Channel> fd2chan_[MAXFDS];//映射
+	TimerQueue timerQueue_;
 
 };
