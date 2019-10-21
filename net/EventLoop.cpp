@@ -7,7 +7,8 @@ __thread EventLoop* t_loopInThisThread = 0;
 
 EventLoop::EventLoop()
 	:looping_(false),
-	threadId_(CurrentThread::tid())
+	threadId_(CurrentThread::tid())，
+	quit_(false)
 {
 	//one loop per thread
 	if (t_loopInThisThread)
@@ -34,7 +35,7 @@ void EventLoop::loop()
 	assert(!looping_);
 	assert(isInLoopThread());
 	looping_ = true ;
-quit_ = false ;
+        quit_ = false ;
 	//LOG_TRACE << "EventLoop" << this <<"start looping";
 	std::vector<SP_Channel> activeChannels;
 	while (!quit_)
