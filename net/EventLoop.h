@@ -6,6 +6,7 @@
 #include<vector>
 #include<functional>
 #include <sys/eventfd.h>
+#include"base/MutexLock.h"
 class EventLoop
 {
 public:	
@@ -14,10 +15,10 @@ public:
 	~EventLoop();
 	void loop();
 	void quit();
-	void runInLoop(Functor&& cb);//å³å€¼å¼•ç”¨æé«˜æ•ˆç‡ï¼Œå‡å°‘å¤åˆ¶
+	void runInLoop(Functor&& cb);//ÓÒÖµÒıÓÃÌá¸ßĞ§ÂÊ£¬¼õÉÙ¸´ÖÆ
 	void queueInLoop(Functor&& cb);
 
-	//åˆ¤æ–­æ˜¯å¦åœ¨loopçº¿ç¨‹ä¸­
+	//ÅĞ¶ÏÊÇ·ñÔÚloopÏß³ÌÖĞ
 	bool isInLoopThread()const
 	{
 		return threadId_ == CurrentThread::tid();
@@ -25,7 +26,7 @@ public:
 
 	void assertInLoopThread()
 	{
-		//æ²¡æœ‰åŠ å¤´æ–‡ä»¶<assert.h>
+		//Ã»ÓĞ¼ÓÍ·ÎÄ¼ş<assert.h>
 		assert(isInLoopThread());
 	}
 
@@ -35,13 +36,13 @@ private:
 	bool looping_;//atomic
 	bool quit_;//atomic
 	bool eventHandling_;//atomic
-	const pid_t threadId_;//pid_tè¿™ä¸ªç±»å‹å®šä¹‰å®é™…ä¸Šå°±æ˜¯intå‹
-	shared_ptr<Epoll> poller_;//é€šè¿‡shared_ptré—´æ¥æŒæœ‰Poller
-	//å£°æ˜é¡ºåº wakeup_ > wakeupChannel_ ä¸ç„¶æ„é€ å‡½æ•°å‡ºé—®é¢˜
-	int wakeupFd_;//å”¤é†’ç”¨eventfd
+	const pid_t threadId_;//pid_tÕâ¸öÀàĞÍ¶¨ÒåÊµ¼ÊÉÏ¾ÍÊÇintĞÍ
+	shared_ptr<Epoll> poller_;//Í¨¹ıshared_ptr¼ä½Ó³ÖÓĞPoller
+	//ÉùÃ÷Ë³Ğò wakeup_ > wakeupChannel_ ²»È»¹¹Ôìº¯Êı³öÎÊÌâ
+	int wakeupFd_;//»½ĞÑÓÃeventfd
 	shared_ptr<Channel> wakeupChannel_;
 	bool callingPendingFunctors_;
-	std::vector<Functor> pendingFunctors_;//æš´éœ²ç»™äº†å…¶ä»–çº¿ç¨‹ï¼Œå› æ­¤ç”¨mutex_ä¿æŠ¤
+	std::vector<Functor> pendingFunctors_;//±©Â¶¸øÁËÆäËûÏß³Ì£¬Òò´ËÓÃmutex_±£»¤
 	mutable MutexLock mutex_;
 
 
