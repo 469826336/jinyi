@@ -14,7 +14,7 @@ Timer::Timer(std::shared_ptr<HttpData> requestData,int timeout)
 {
 	struct timeval now;
 	gettimeofday(&now,NULL);
-	//�Ժ����,tv_secΪʲôҪ%10000
+	//以毫秒计,tv_sec为什么要%10000  因为超过10000秒的计时没啥意义啊，太长了——linya
 	expiredTime_ = (((now.tv_sec % 10000) * 1000) + (now.tv_usec / 1000)) + timeout;
 }
 
@@ -28,7 +28,7 @@ Timer::~Timer()
 }
 
 
-//����ĸ��ƹ���û�и���deleted_?
+//这里的复制构造没有复制deleted_?
 Timer::Timer(Timer &tn)
 	:SPHttpData(tn.SPHttpData)
 {}
@@ -78,7 +78,7 @@ void TimerQueue::addTimer(std::shared_ptr<HttpData> SPHttpData,int timeout)
 {
 	SP_Timer new_timer(new Timer(SPHttpData,timeout));
 	timerQueue.push(new_timer);
-	//linkTimer��û��
+	//linkTimer还没看
 	SPHttpData->linkTimer(new_timer)
 }
 
