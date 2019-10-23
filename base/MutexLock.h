@@ -5,10 +5,10 @@
 #pragma once
 #include"base/noncopyable.h"
 #include <pthread.h>
-//æ²¡çœ‹åˆ°å“ªé‡Œç”¨äº†io
+//Ã»¿´µ½ÄÄÀïÓÃÁËio
 //#include <cstdio>
 
-//æ— æ³•æ‹·è´ç±»åªèƒ½ä¼ é€’å¯¹è±¡çš„æŒ‡é’ˆæˆ–è€…å¼•ç”¨
+//ÎŞ·¨¿½±´ÀàÖ»ÄÜ´«µİ¶ÔÏóµÄÖ¸Õë»òÕßÒıÓÃ
 class MutexLock:noncopyable
 {
 public:
@@ -19,9 +19,9 @@ public:
 
 	~MutexLock()
 	{
-		//è¿™é‡ŒåŠ äº†é”ä¹‹åå…¶ä»–çº¿ç¨‹å°±å¡ä½äº†ï¼Œç›¸å½“äºå¤±æ•ˆäº†
+		//ÕâÀï¼ÓÁËËøÖ®ºóÆäËûÏß³Ì¾Í¿¨×¡ÁË£¬Ïàµ±ÓÚÊ§Ğ§ÁË
 		pthread_mutex_lock(&mutex_);
-		//ç”±äºåœ¨linuxä¸­ï¼Œäº’æ–¥é”å¹¶ä¸å ç”¨ä»»ä½•èµ„æºï¼Œå› æ­¤è¿™ä¸ªå‡½æ•°é™¤äº†æ£€æŸ¥é”çŠ¶æ€ä»¥å¤–ï¼ˆé”å®šçŠ¶æ€åˆ™è¿”å›EBUSYï¼‰æ²¡æœ‰å…¶ä»–åŠ¨ä½œ
+		//ÓÉÓÚÔÚlinuxÖĞ£¬»¥³âËø²¢²»Õ¼ÓÃÈÎºÎ×ÊÔ´£¬Òò´ËÕâ¸öº¯Êı³ıÁË¼ì²éËø×´Ì¬ÒÔÍâ£¨Ëø¶¨×´Ì¬Ôò·µ»ØEBUSY£©Ã»ÓĞÆäËû¶¯×÷
 		pthread_mutex_destroy(&mutex_);
 	}
 
@@ -35,7 +35,7 @@ public:
 		pthread_mutex_unlock(&mutex_);
 	}
 
-	//è¿˜ä¸æ˜ç™½å“ªé‡Œä¼šç”¨åˆ°get()
+	//»¹²»Ã÷°×ÄÄÀï»áÓÃµ½get() Condition::wait(),timewait()
 	pthread_mutex_t *get()
 	{
 		return &mutex_;
@@ -50,6 +50,7 @@ private:
 class MutexLockGuard:noncopyable
 {
 public:
+	//±ÜÃâÒ»Ğ©ÎŞÒâµÄÇ±ÔÚ´íÎó£¬ºÜ¶àÊ±ºòÒ»¸ö²»¾­ÒâµÄ¸³Öµ±¾À´ÊÇ´íµÄ£¬½á¹ûÃ»ÓĞexplicit£¬¸³Öµ¶ÔÏóÓÖ¿ÉÒşÊ½×ª»»Îª²ÎÊıÕâÖÖÀàĞÍ£¬Ò²¾Í³ÉÁËÒ»¸öÄÑÒÔ·¢ÏÖµÄBUG
 	explicit MutexLockGuard(MutexLock & mutex)
 		:mutex_(mutex)
 	{
