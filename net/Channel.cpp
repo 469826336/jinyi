@@ -2,15 +2,23 @@
 #include"EventLoop.h"
 
 
-Channel::Channel(EventLoop *loop):loop_(loop),events_(0)
+Channel::Channel(EventLoop *loop)
+	:loop_(loop),
+	events_(0)，
+	lastEvents_(0),
+	fd_(0)
 {}
 
-Channel::Channel(EventLoop *loop,int fd):loop_(loop),fd_(fd),events_(0)
+Channel::Channel(EventLoop *loop,int fd)
+	:loop_(loop),
+	fd_(fd),
+	events_(0),
+	lastEvents_(0)
 {}
 
 Channel::~Channel()
 {
-	//ÒòÎªÓÃµ½smart_ptr,<memory>?
+	//因为用到smart_ptr,<memory>?
 	//loop_->poller_->epoll_del(fd.events_);
 	//close(fd_);
 }
