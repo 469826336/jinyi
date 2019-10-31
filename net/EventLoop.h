@@ -10,15 +10,27 @@
 class EventLoop
 {
 public:	
+	typedef std::function<void()> Functor;#pragma once
+#include "base/CurrentThread.h"
+#include "MutexLock.h"
+#include "Epoll.h"
+#include <memory>
+#include<vector>
+#include<functional>
+#include <sys/eventfd.h>
+#include"base/MutexLock.h"
+class EventLoop
+{
+public:	
 	typedef std::function<void()> Functor;
 	EventLoop();
 	~EventLoop();
 	void loop();
 	void quit();
-	void runInLoop(Functor&& cb);//ÓÒÖµÒıÓÃÌá¸ßĞ§ÂÊ£¬¼õÉÙ¸´ÖÆ
+	void runInLoop(Functor&& cb);//å³å€¼å¼•ç”¨æé«˜æ•ˆç‡ï¼Œå‡å°‘å¤åˆ¶
 	void queueInLoop(Functor&& cb);
 
-	//ÅĞ¶ÏÊÇ·ñÔÚloopÏß³ÌÖĞ
+	//åˆ¤æ–­æ˜¯å¦åœ¨loopçº¿ç¨‹ä¸­
 	bool isInLoopThread()const
 	{
 		return threadId_ == CurrentThread::tid();
@@ -26,7 +38,57 @@ public:
 
 	void assertInLoopThread()
 	{
-		//Ã»ÓĞ¼ÓÍ·ÎÄ¼ş<assert.h>
+		//æ²¡æœ‰åŠ å¤´æ–‡ä»¶<assert.h>
+		assert(isInLoopThread());
+	}
+
+	void updatePoller(shared_ptr<Channel> channel,int timeout = 0)
+	{
+		poller_->epoll_mod(channel,timeout);
+	}
+
+	void addToPoller(shared_ptr<Channel> channel,int timeout = 0)
+	{
+		poller_->epoll_add(channel,timeout);
+	}
+private:
+
+	bool looping_;//atomic
+	bool quit_;//atomic
+	bool eventHandling_;//atomic
+	const pid_t threadId_;//pid_tè¿™ä¸ªç±»å‹å®šä¹‰å®é™…ä¸Šå°±æ˜¯intå‹
+	shared_ptr<Epoll> poller_;//é€šè¿‡shared_ptré—´æ¥æŒæœ‰Poller
+	//å£°æ˜é¡ºåº wakeup_ > wakeupChannel_ ä¸ç„¶æ„é€ å‡½æ•°å‡ºé—®é¢˜
+	int wakeupFd_;//å”¤é†’ç”¨eventfd
+	shared_ptr<Channel> wakeupChannel_;
+	bool callingPendingFunctors_;
+	std::vector<Functor> pendingFunctors_;//æš´éœ²ç»™äº†å…¶ä»–çº¿ç¨‹ï¼Œå› æ­¤ç”¨mutex_ä¿æŠ¤
+	mutable MutexLock mutex_;
+
+
+	void wakeup();
+	void handleRead();
+	void doPendingFunctors();
+
+
+
+}
+	EventLoop();
+	~EventLoop();
+	void loop();
+	void quit();
+	void runInLoop(Functor&& cb);//å³å€¼å¼•ç”¨æé«˜æ•ˆç‡ï¼Œå‡å°‘å¤åˆ¶
+	void queueInLoop(Functor&& cb);
+
+	//åˆ¤æ–­æ˜¯å¦åœ¨loopçº¿ç¨‹ä¸­
+	bool isInLoopThread()const
+	{
+		return threadId_ == CurrentThread::tid();
+	}
+
+	void assertInLoopThread()
+	{
+		//æ²¡æœ‰åŠ å¤´æ–‡ä»¶<assert.h>
 		assert(isInLoopThread());
 	}
 
@@ -36,13 +98,13 @@ private:
 	bool looping_;//atomic
 	bool quit_;//atomic
 	bool eventHandling_;//atomic
-	const pid_t threadId_;//pid_tÕâ¸öÀàĞÍ¶¨ÒåÊµ¼ÊÉÏ¾ÍÊÇintĞÍ
-	shared_ptr<Epoll> poller_;//Í¨¹ıshared_ptr¼ä½Ó³ÖÓĞPoller
-	//ÉùÃ÷Ë³Ğò wakeup_ > wakeupChannel_ ²»È»¹¹Ôìº¯Êı³öÎÊÌâ
-	int wakeupFd_;//»½ĞÑÓÃeventfd
+	const pid_t threadId_;//pid_tè¿™ä¸ªç±»å‹å®šä¹‰å®é™…ä¸Šå°±æ˜¯intå‹
+	shared_ptr<Epoll> poller_;//é€šè¿‡shared_ptré—´æ¥æŒæœ‰Poller
+	//å£°æ˜é¡ºåº wakeup_ > wakeupChannel_ ä¸ç„¶æ„é€ å‡½æ•°å‡ºé—®é¢˜
+	int wakeupFd_;//å”¤é†’ç”¨eventfd
 	shared_ptr<Channel> wakeupChannel_;
 	bool callingPendingFunctors_;
-	std::vector<Functor> pendingFunctors_;//±©Â¶¸øÁËÆäËûÏß³Ì£¬Òò´ËÓÃmutex_±£»¤
+	std::vector<Functor> pendingFunctors_;//æš´éœ²ç»™äº†å…¶ä»–çº¿ç¨‹ï¼Œå› æ­¤ç”¨mutex_ä¿æŠ¤
 	mutable MutexLock mutex_;
 
 
