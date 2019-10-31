@@ -23,6 +23,7 @@ private:
 	EventCallBack readHandler_;
 	EventCallBack writeHandler_;
 	EventCallBack errorHandler_;
+	EventCallBack connHandler_;
 
 public:
 	Channel(EventLoop *loop);
@@ -47,6 +48,10 @@ public:
 	void setErrorHandle(EventCallBack errorHandler)
 	{
 		errorHandler_ = errorHandler ;
+	}
+	void setConnHandler(EventCallBack connHandler)
+	{
+		connHandler_ = connHandler;
 	}
 
 	//定时器不用muduo方法
@@ -84,8 +89,7 @@ public:
 				writeHandler_();
 			}
 		}
-
-		
+		connHandler_();
 	}
 
 	//void handleError(int fd,int err_num,std::string short_msg);
