@@ -14,14 +14,14 @@ Server::Server(EventLoop* loop,int threadNum,int port)
 	eventLoopThreadPool_(new EventLoopThreadPool(loop_,threadNum)),
 	started_(false),
 	port_(port),
-	listenFd_(socket_bind_listen(port_))//×¢²áÃèÊö·û²¢¿ªÊ¼¼àÊÓ
+	listenFd_(socket_bind_listen(port_))//æ³¨å†Œæè¿°ç¬¦å¹¶å¼€å§‹ç›‘è§†
 {
 	acceptChannel_->setFd(listenFd_);
-	handle_for_sigpipe();//ÎªÁË±ÜÃâ½ø³ÌÍË³ö, ¿ÉÒÔ²¶»ñSIGPIPEĞÅºÅ, »òÕßºöÂÔËü, ¸øËüÉèÖÃSIG_IGNĞÅºÅ´¦Àíº¯Êı
+	handle_for_sigpipe();//ä¸ºäº†é¿å…è¿›ç¨‹é€€å‡º, å¯ä»¥æ•è·SIGPIPEä¿¡å·, æˆ–è€…å¿½ç•¥å®ƒ, ç»™å®ƒè®¾ç½®SIG_IGNä¿¡å·å¤„ç†å‡½æ•°
 	if (setSocketNonBlocking(listenFd_) < 0)
 	{
-		perror("set socket non block failed");//Ã»ÓĞperrorµÄÍ·ÎÄ¼ş£¿
-		abort();//abortµÄÒ²Ã»ÓĞ
+		perror("set socket non block failed");//æ²¡æœ‰perrorçš„å¤´æ–‡ä»¶ï¼Ÿ
+		abort();//abortçš„ä¹Ÿæ²¡æœ‰
 	}
 }
 
@@ -33,6 +33,43 @@ void Server::start()
 	acceptChannel_->setConnHandler(bind(&Server::handThisConn,this));
 	loop_->addToPoller(acceptChannel_,0);
 	started_ = true;
+}
+
+void Server::handNewConn()
+{
+	struct sockaddr_in client_addr;
+	memset(&client_addr,0,sizeof(struct sockaddr_in));
+	socklen_t client_addr_len = sizeof(client_addr);
+	int accept_fd = 0;
+	while ((accept_fd = accept(listenFd_,(struct sockaddr*)&client_addr),&client_addr_len) > 0)
+	{
+		EventLoop* loop = eventLoopThreadPool_->getNextLoop();
+		// tcpçš„ä¿æ´»æœºåˆ¶é»˜è®¤æ˜¯å…³é—­çš„ï¼Œæ™šç‚¹çœ‹çœ‹http1.1ï¼Œå¥½åƒæ˜¯å¼€å¯çš„
+
+		// é™åˆ¶æœåŠ¡å™¨çš„æœ€å¤§å¹¶å‘è¿æ¥æ•°ï¼Œè¿™é‡Œçš„å€¼è·Ÿå¹¶å‘è¿æ¥æ•°æœ‰å…³ç³»å—ï¼Ÿ
+		if (accept_fd >= MAXFDS)
+		{
+			close(accept_fd);
+			continue;
+		}
+		// è®¾ä¸ºéé˜»å¡æ¨¡å¼
+		if (setSocketNonBlocking(accept_fd < 0))
+		{
+
+		}
+		//å…³é—­nagleç®—æ³•
+		setSocketNodelay(accept_fd);
+		
+
+
+
+	}
+
+
+
+
+	acceptChannel_->setEvents(EPOLLIN || EPOLLET);
+
 }
 
 
