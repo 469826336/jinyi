@@ -47,7 +47,7 @@ void Epoll::epoll_add(SP_Channel request,int timeout)
 }
 
 //修改描述符状态
-void Epoll::epoll_add(SP_Channel request,int timeout)
+void Epoll::epoll_mod(SP_Channel request,int timeout)
 {
 	if (timeout > 0)
 	{
