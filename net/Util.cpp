@@ -5,21 +5,21 @@
 #include "Util.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netinet/tcp.h>//²»ÖªµÀÕâ¸öÓÃÀ´¸ÉÂï
+#include <netinet/tcp.h>//ä¸çŸ¥é“è¿™ä¸ªç”¨æ¥å¹²å˜›
 #include <string.h>
 #include <signal.h>
 #include <fcntl.h>
 
-// ·µ»ØÒÑ¾­¿ªÊ¼¼àÌıµÄÃèÊö·û£¬Èç¹û³õÊ¼»¯Ê§°Ü·µ»Ø-1
+// è¿”å›å·²ç»å¼€å§‹ç›‘å¬çš„æè¿°ç¬¦ï¼Œå¦‚æœåˆå§‹åŒ–å¤±è´¥è¿”å›-1
 int socket_bind_listen(int port)
 {
-	// ¼ì²éportÖµ£¬È¡ÕıÈ·Çø¼ä·¶Î§,ÔÚTCP¡¢UDPĞ­ÒéµÄ¿ªÍ·£¬»á·Ö±ğÓĞ16Î»À´´æ´¢Ô´¶Ë¿ÚºÅºÍÄ¿±ê¶Ë¿ÚºÅ£¬ËùÒÔ¶Ë¿Ú¸öÊıÊÇ2^16-1=65535¸ö
+	// æ£€æŸ¥portå€¼ï¼Œå–æ­£ç¡®åŒºé—´èŒƒå›´,åœ¨TCPã€UDPåè®®çš„å¼€å¤´ï¼Œä¼šåˆ†åˆ«æœ‰16ä½æ¥å­˜å‚¨æºç«¯å£å·å’Œç›®æ ‡ç«¯å£å·ï¼Œæ‰€ä»¥ç«¯å£ä¸ªæ•°æ˜¯2^16-1=65535ä¸ª
 	if (port < 0 || port > 65535)
 	{
 		return -1;
 	}
 
-	// ´´½¨socket(IPv4 + TCP),·µ»Ø¼àÌıÃèÊö·û
+	// åˆ›å»ºsocket(IPv4 + TCP),è¿”å›ç›‘å¬æè¿°ç¬¦
 	int listen_fd = 0;
 	if ((listen_fd = socket(AF_INET,SOCK_STREAM,0)) == -1)
 	{
@@ -27,7 +27,7 @@ int socket_bind_listen(int port)
 		return -1;
 	}
 
-	// Ïû³ıbindÊ±"Address already in use"´íÎó
+	// æ¶ˆé™¤bindæ—¶"Address already in use"é”™è¯¯
 	int optVal = 1;
 	if (setsockopt(listen_fd,SOL_SOCKET,SO_REUSEADDR,&optVal,sizeof(optVal)) == -1)
 	{
@@ -35,7 +35,7 @@ int socket_bind_listen(int port)
 		return -1;
 	}
 
-	// ÉèÖÃ·şÎñÆ÷IP¡¢PortºÍ¼àÌıÃèÊö·û°ó¶¨
+	// è®¾ç½®æœåŠ¡å™¨IPã€Portå’Œç›‘å¬æè¿°ç¬¦ç»‘å®š
 	struct sockaddr_in server_addr;
 	bzero((char*)&server_addr,sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
@@ -47,14 +47,14 @@ int socket_bind_listen(int port)
 		return -1;
 	}
 
-	// ¿ªÊ¼¼àÌı£¬×î´óµÈ´ı¶ÓÁĞ³¤ÎªLISTENQ
+	// å¼€å§‹ç›‘å¬ï¼Œæœ€å¤§ç­‰å¾…é˜Ÿåˆ—é•¿ä¸ºLISTENQ
 	if (listen(listen_fd,2048) == -1)
 	{
 		close(listen_fd);
 		return -1;
 	}
 
-	//ÎŞĞ§¼àÌıÃèÊö·û
+	//æ— æ•ˆç›‘å¬æè¿°ç¬¦
 	if (listen_fd == -1)
 	{
 		close(listen_fd);
@@ -66,13 +66,13 @@ int socket_bind_listen(int port)
 
 void handle_for_sigpipe()
 {
-	struct sigaction sa;//Í·ÎÄ¼şsignal.h
+	struct sigaction sa;//å¤´æ–‡ä»¶signal.h
 	memset(&sa,'\0',sizeof(sa));
 	sa.sa_handler = SIG_IGN;
 	sa.sa_flags = 0;
-	if (sigaction(SIGPIPE,&sa,NULL))//ÏÖÔÚ´ó¶àÏµÍ³¶¼ÓÃsigactionÖØĞÂÊµÏÖÁËsignalº¯Êı
+	if (sigaction(SIGPIPE,&sa,NULL))//ç°åœ¨å¤§å¤šç³»ç»Ÿéƒ½ç”¨sigactioné‡æ–°å®ç°äº†signalå‡½æ•°
 	{
-		return;//ÓĞÊ²Ã´ÒâÒåÄØ£¿
+		return;//æœ‰ä»€ä¹ˆæ„ä¹‰å‘¢ï¼Ÿ
 	}
 }
 
@@ -91,7 +91,11 @@ int setSocketNonBlocking(int fd)
 	return 0;
 }
 
-
+void setSocketNodelay(int fd)
+{
+	int enable = 1;
+	setsockopt(fd,IPPROTO_TCP,TCP_NODELAY,(void*)&enable,sizeof(enable));
+}
 
 
 
