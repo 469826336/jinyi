@@ -5,6 +5,14 @@
 #pragma once
 #include <unordered_map>
 #include <pthread.h>
+#include <map>
+#include <memory>
+#include <unistd.h>
+#include <functional>
+#include <>
+class EventLoop;
+class Timer;
+class Channel;
 enum ProcessState
 {
 	STATE_PARSE_URI = 1,
@@ -83,4 +91,56 @@ public:
 private:
 	static pthread_once_t once_control;
 };
-class HttpData;
+class HttpData:public std::enable_shared_from_this<HttpData> 
+{
+public:
+	HttpData(EventLoop *loop,int connfd);
+	~HttpData(){close(fd_);}
+	void reset();
+	void seperateTimer();
+	void linkTimer(std::shared_ptr<Timer>)
+	{
+		
+	}
+	std::shared_ptr<Channel> getChannel() {return channel_;}
+	EventLoop *getLoop() {return loop_;}
+	void handleClose;
+	void newEvent;
+
+private:
+	EventLoop *loop_;
+	int fd_;
+	std::shared_ptr<Channel> channel_;
+	std::string inBuffer_;
+	std::string outBuffer_;
+	bool error_;
+	ConnectionState connectionState_;
+
+	HttpMethod method_;
+	HttpVersion HttpVersion_;
+	std::string fileName_;
+	std::string path_;
+	int nowReadPos_;
+	ProcessState state_;
+	ParseState hState_;
+	bool keepAlive_;
+	std::map<std::string,std::string> headers_;
+	//std::weak_ptr<Timer> timer_;
+
+	void handleRead();
+	void handleWrite();
+	void handleConn();
+	void handleError(int fd,int err_num,std::string short_msg);
+	URIState parseHeaders();
+	HeaderState parseHeaders();
+	AnalysisState analysisRequest();
+};
+
+
+
+
+
+
+
+
+
