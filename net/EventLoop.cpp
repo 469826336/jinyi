@@ -2,7 +2,7 @@
 
 
 
-//__threadĞŞÊÎ£¬Ã¿¸öÏß³Ì¶¼ÓĞÒ»¸ö¶ÀÁ¢ÊµÌå
+//__threadä¿®é¥°ï¼Œæ¯ä¸ªçº¿ç¨‹éƒ½æœ‰ä¸€ä¸ªç‹¬ç«‹å®ä½“
 __thread EventLoop* t_loopInThisThread = 0;
 
 
@@ -18,7 +18,7 @@ int createEventfd()
 }
 EventLoop::EventLoop()
 	:looping_(false),
-	threadId_(CurrentThread::tid())£¬
+	threadId_(CurrentThread::tid())ï¼Œ
 	quit_(false),
 	eventHandling_(false),
 	poller_(new Epoll()),
@@ -36,7 +36,7 @@ EventLoop::EventLoop()
 		t_loopInThisThread = this ;
 	}
 
-	wakeupChannel_->setEvents(EPOLLIN | EPOLLET);//EPOLLET½«EPOLLÉèÎª±ßÔµ´¥·¢(Edge Triggered)Ä£Ê½
+	wakeupChannel_->setEvents(EPOLLIN | EPOLLET);//EPOLLETå°†EPOLLè®¾ä¸ºè¾¹ç¼˜è§¦å‘(Edge Triggered)æ¨¡å¼
 	wakeupChannel_->setReadHandle(bind(&EventLoop::handleRead,this));
 	poller_->epoll_add(wakeupChannel_,0);
 }
@@ -44,7 +44,7 @@ EventLoop::EventLoop()
 
 EventLoop::~EventLoop()
 {
-	//·ÀÖ¹ÔÚloop()ÖĞ
+	//é˜²æ­¢åœ¨loop()ä¸­
 	assert(!looping_);
 	t_loopInThisThread = NULL ;
 }
@@ -70,7 +70,7 @@ void EventLoop::handleRead()
 	{
 		LOG << "EventLoop::handleRead() reads" << n << "bytes instead of 8";
 	}
-	//Ã¿´ÎhandleEventsÊ±¶¼»á°ÑeventsÖÃÎª0
+	//æ¯æ¬¡handleEventsæ—¶éƒ½ä¼šæŠŠeventsç½®ä¸º0
 	wakeupChannel_->setEvents(EPOLLIN | EPOLLET);
 }
 void EventLoop::runInLoop(Functor&& cb)
@@ -81,7 +81,7 @@ void EventLoop::runInLoop(Functor&& cb)
 	} 
 	else
 	{
-		queueInLoop(std::move(cb));//ÎªÊ²Ã´ÕâÀï»¹ÒªÔÙ×ªÒ»´Î?
+		queueInLoop(std::move(cb));//ä¸ºä»€ä¹ˆè¿™é‡Œè¿˜è¦å†è½¬ä¸€æ¬¡?
 	}
 }
 
@@ -90,7 +90,7 @@ void EventLoop::queueInLoop(Functor&& cb)
 {
 	{
 		MutexLockGuard lock(mutex_);
-		pendingFunctors_.emplace_back(std::move(cb));//cb²»ÒÑ¾­ÊÇÓÒÖµÒıÓÃÁËÂğ ÎªÊ²Ã´»¹Òªmove()
+		pendingFunctors_.emplace_back(std::move(cb));//cbä¸å·²ç»æ˜¯å³å€¼å¼•ç”¨äº†å— ä¸ºä»€ä¹ˆè¿˜è¦move()
 	}
 	if (!isInLoopThread() || callingPendingFunctors_)
 	{
@@ -132,11 +132,11 @@ void EventLoop::doPendingFunctors()
 	
 	{
 		MutexLockGuard lock(mutex_);
-		//EventLoop::doPendingFunctors()²»ÊÇ¼òµ¥µØÔÚÁÙ½çÇøÄÚÒÀ´Îµ÷ÓÃFunctor£¬¶øÊÇ°Ñ
-		//»Øµ÷ÁĞ±íswap()µ½¾Ö²¿±äÁ¿functorsÖĞ£¬ÕâÑùÒ»·½Ãæ¼õĞ¡ÁËÁÙ½çÇøµÄ³¤¶È(ÒâÎ¶×Å²»»á
-		//×èÈûÆäËûÏß³Ìµ÷ÓÃqueueInLoop())£¬ÁíÒ»·½ÃæÒ²±ÜÃâÁËËÀËø(ÒòÎªFunctor¿ÉÄÜÔÙµ÷ÓÃ
+		//EventLoop::doPendingFunctors()ä¸æ˜¯ç®€å•åœ°åœ¨ä¸´ç•ŒåŒºå†…ä¾æ¬¡è°ƒç”¨Functorï¼Œè€Œæ˜¯æŠŠ
+		//å›è°ƒåˆ—è¡¨swap()åˆ°å±€éƒ¨å˜é‡functorsä¸­ï¼Œè¿™æ ·ä¸€æ–¹é¢å‡å°äº†ä¸´ç•ŒåŒºçš„é•¿åº¦(æ„å‘³ç€ä¸ä¼š
+		//é˜»å¡å…¶ä»–çº¿ç¨‹è°ƒç”¨queueInLoop())ï¼Œå¦ä¸€æ–¹é¢ä¹Ÿé¿å…äº†æ­»é”(å› ä¸ºFunctorå¯èƒ½å†è°ƒç”¨
 		//queueInLoop())
-		//Ò»·½Ãæ´óÀ¨ºÅÊ¹ËøµÄ·¶Î§¼õĞ¡£¬ÁíÒ»·½Ãæ±ÜÃâÁËËÀËø
+		//ä¸€æ–¹é¢å¤§æ‹¬å·ä½¿é”çš„èŒƒå›´å‡å°ï¼Œå¦ä¸€æ–¹é¢é¿å…äº†æ­»é”
 		functors.swap(pendingFunctors_);
 	}
 
@@ -156,7 +156,3 @@ void EventLoop::quit()
 		wakeup();
 	}
 }
-
-
-
-
