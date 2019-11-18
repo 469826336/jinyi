@@ -207,3 +207,8 @@ ssize_t writen(int fd,std::string &sbuff)
 	}
 	return writeSum;
 }
+
+void shutDownWR(int fd)
+{
+	shutdown(fd,SHUT_WR);
+}
