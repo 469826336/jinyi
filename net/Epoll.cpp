@@ -123,3 +123,7 @@ void Epoll::handleExpired()
 	timerQueue_.handleExpiredTimer();
 }
 
+void Epoll::add_timer(SP_Channel request_data,int timeout)
+{
+	shared_ptr<HttpData> t = request_data->getHolder();
+}
