@@ -33,7 +33,7 @@ void EventLoopThread::startLoop()
 	thread_.start();
 	{
 		MutexLockGuard lock(mutex_);
-		//Ò»Ö±µÈµ½threadFunÔÚThreadÀïÕæÕıÅÜÆğÀ´
+		//ä¸€ç›´ç­‰åˆ°threadFunåœ¨Threadé‡ŒçœŸæ­£è·‘èµ·æ¥
 		while (loop_ == NULL)
 		{
 			cond_.wait();
@@ -54,9 +54,9 @@ void EventLoopThread::threadFunc()
 	}
 
 	loop.loop();
-	//assert(exiting_) ÓÉÓÚEventLoopµÄÉúÃüÆÚÓëÏß³ÌÖ÷º¯ÊıµÄ×÷ÓÃÓòÏàÍ¬£¬Òò´ËÔÚthreadFunc()ÍË³öÖ®ºó
-	//Õâ¸öÖ¸Õë¾ÍÊ§Ğ§ÁË¡£ºÃÔÚ·şÎñ³ÌĞòÒ»°ã²»ÒªÇóÄÜ°²È«µØÍË³ö£¬ÕâÓ¦¸Ã²»ÊÇÊ²Ã´´óÎÊÌâ
-	loop_ = NULL
+	//assert(exiting_) ç”±äºEventLoopçš„ç”Ÿå‘½æœŸä¸çº¿ç¨‹ä¸»å‡½æ•°çš„ä½œç”¨åŸŸç›¸åŒï¼Œå› æ­¤åœ¨threadFunc()é€€å‡ºä¹‹å
+	//è¿™ä¸ªæŒ‡é’ˆå°±å¤±æ•ˆäº†ã€‚å¥½åœ¨æœåŠ¡ç¨‹åºä¸€èˆ¬ä¸è¦æ±‚èƒ½å®‰å…¨åœ°é€€å‡ºï¼Œè¿™åº”è¯¥ä¸æ˜¯ä»€ä¹ˆå¤§é—®é¢˜
+	loop_ = NULL;
 
 
 }
