@@ -1,27 +1,31 @@
-// @file    EventLoopThread.h
+// @file    EventLoopThreadPool.h
 // @author  axunzzz
-// @date    2019/10/23
+// @date    2019/10/29
 // @Email   469826336@qq.com
 #pragma once
 #include "base/noncopyable.h"
-#include "base/Condition.h"
-#include "base/MutexLock.h"
-#include "base/CountDownLatch.h"
-#include "EventLoop.h"
-//暂时没有头文件Thread.h
+#include "EventLoopThread.h"
+#include <memory>
+#include <vector>
 
-class EventLoopThread:noncopyable
+class EventLoopThreadPool:noncopyable
 {
 public:
-	EventLoopThread();
-	~EventLoopThread();
-	EventLoop* startLoop();
+	EventLoopThreadPool(EventLoop* baseloop,int threadNums);
+
+	~EventLoopThreadPool()
+	{
+		
+	}
+	void start();
+
+	EventLoop *getNextLoop();
 
 private:
-		void threadFunc();
-		EventLoop *loop_;
-		bool exiting_;
-		Thread thread_;
-		MutexLock mutex_;
-		Condition cond_;
+	EventLoop* baseloop_;
+	bool started_;
+	int threadNums_;
+	int next_;
+	std::vector<std::shared_ptr<EventLoopThread>> threads_;
+	std::vector<EventLoop*>loops_;
 };
