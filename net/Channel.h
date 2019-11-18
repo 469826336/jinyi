@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <functional>
+#include <sys/epoll.h>
 
 
 
@@ -24,7 +25,8 @@ private:
 	EventCallBack writeHandler_;
 	EventCallBack errorHandler_;
 	EventCallBack connHandler_;
-
+	// 避免循环引用
+	std::weak_ptr<HttpData> holder_;
 public:
 	Channel(EventLoop *loop);
 	Channel(EventLoop *loop,int fd);
@@ -119,13 +121,13 @@ public:
 		return lastEvents_;
 	}
 
-
-
-
-
-
-
-
-
-
+	void setHolder(std::shared_ptr<HttpData> holder)
+	{
+		holder_ = holder;
+	}
+	std::shared_ptr<HttpData> getHolder()
+	{
+		std::shared_ptr<HttpData> ret(holder_.lock());
+		return ret;
+	}
 };
